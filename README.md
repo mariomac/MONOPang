@@ -1,17 +1,15 @@
-MOO Pang 
+MONO Pang 
 ========
-2011 Mario Macías
+2014 Mario Macías
 
 ![Screenshot](shot.png "Screenshot")
 
-Simple videogame created for my students of Object-Oriented Design and Programming.
-Code and comments are in Spanish language.
+C#/Mono port of MOO Pang that I did to get introduced in such language. [Please refer to the original MOO Pang web wite for more information about MOO/MONO Pang](https://github.com/mariomac/MOOPang).
 
 Compiling and executing
 -----------------------
-From the console, go to the project root directory and type:
 
-ant run
+TO DO
 
 How to play
 -----------

@@ -10,19 +10,6 @@
  * -----------------------------------------------------------------------------
  */
 
-package moo.pang.multimedia;
-
-import java.awt.Color;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
-import moo.multimedia.Ventana;
-import moo.pang.objetosanimados.Bola;
-import moo.pang.objetosanimados.Disparo;
-import moo.pang.objetosanimados.ObjetoAnimado;
-import moo.pang.objetosanimados.Protagonista;
-
 /**
  * Esta es la clase principal del juego. Tiene las siguientes funciones:
  * <ul>
@@ -34,12 +21,16 @@ import moo.pang.objetosanimados.Protagonista;
  * </ul>
  * @author Mario Macías http://mario.site.ac.upc.edu
  */
+using System;
+using System.Collections.Generic;
+
+
 public class Juego {
     /**
      * una constante que indica el tamaño en pixels (tanto ancho como alto) de
      * las paredes laterales y el suelo
      */
-    private static final int MARGEN = 24;
+	private const int MARGEN = 24;
 
     /**
      * Lista que guarda todos los objetos animados: bolas, protagonista, disparos...
@@ -68,30 +59,30 @@ public class Juego {
      * Inicialmente, 15 segundos entre una bola y otra. Se irá decrementando poco a poco
      * para hacer el juego más difícil.
      */
-    private static final long MINIMA_FRECUENCIA_ENTRE_BOLAS = 15000;
+	private const long MINIMA_FRECUENCIA_ENTRE_BOLAS = 15000;
     /**
      * Para que el juego no acabe siendo imposible, la frecuencia máxima será de una
      * bola cada 5 segundos.
      */
-    private static final long MAXIMA_FRECUENCIA_ENTRE_BOLAS = 5000;
+	private const long MAXIMA_FRECUENCIA_ENTRE_BOLAS = 5000;
     /**
      * Por cada bola que salga, el tiempo que tarda entre ésta y la siguiente
      * Se acortará 200 milisegundos
      */
-    private static final long ACELERACION_FRECUENCIA_BOLAS = 200;
+	private const long ACELERACION_FRECUENCIA_BOLAS = 200;
 
-    private static final Random RANDOM = new Random();
+	private const Random RANDOM = new Random();
 
     /**
      * Será "true" cuando una bola haya tocado al jugador, y el juego haya acabado.
      */
-    private boolean finDeJuego;
+    private bool finDeJuego;
     /**
      * Se limita a crear una nueva Ventana y asociarla al juego cuya escena
      * mostrará.
      */
-    public Juego() {
-        this.ventana = new Ventana("MOOPang", 640, 480);
+	public Juego(Ventana v) {
+		this.ventana = v; 
     }
 
     /**
@@ -100,7 +91,7 @@ public class Juego {
     public void partida() {
         //inicia algunos datos
         frecuenciaEntreBolas = MINIMA_FRECUENCIA_ENTRE_BOLAS;
-        objetosAnimados = new LinkedList<ObjetoAnimado>();
+        objetosAnimados = new ArrayList<ObjetoAnimado>();
         objetosAnimados.add(new Protagonista(this));
         tiempoDeUltimaBola = 0;
         finDeJuego = false;

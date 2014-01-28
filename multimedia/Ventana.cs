@@ -9,21 +9,7 @@
  * posible, de las buenas) como recompensa por mi contribución.
  * -----------------------------------------------------------------------------
  */
-package moo.multimedia;
-
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.awt.image.BufferedImage;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+using System.Windows.Forms;
 
 /**
  * Esta clase oculta toda la complejidad que hay detrás de la creación de ventanas,
@@ -48,12 +34,17 @@ import javax.swing.JPanel;
  *
  * @author Mario Macías http://mario.site.ac.upc.edu
  */
-public class Ventana implements KeyListener, WindowListener {
+using System;
+using System.Drawing;
+using System.Threading;
+
+
+public class Ventana : Form { // implements KeyListener, WindowListener {
     /**
      * Indica el número de fotogramas por segundo. Es decir, el máximo de veces
      * que se puede mostrar el lienzo por pantalla en un segundo.
      */
-    private static final float FOTOGRAMAS_SEGUNDO = 25;
+	private const float FOTOGRAMAS_SEGUNDO = 25;
 
     /**
      * Guarda una imagen del lienzo en el que se irán pintando las cosas
@@ -67,8 +58,6 @@ public class Ventana implements KeyListener, WindowListener {
     /**
      * JFrame es un objeto que maneja una ventana de pantalla.
      */
-    private JFrame marcoVentana = null;
-
     /**
      * Las siguientes variables booleanas guardan el estado de algunas teclas.
      * serán "true" cuando alguna de estas teclas esté pulsada, y "false" en caso
@@ -80,6 +69,8 @@ public class Ventana implements KeyListener, WindowListener {
             teclaDerecha = false,
             barraEspaciadora = false;
 
+    private Point[] Triangle = new Point[3];
+
     /**
      * Abre una nueva ventana.
      * <b>NOTA</b>: Si se cierra la ventana con el ratón, el programa acabará.
@@ -87,27 +78,25 @@ public class Ventana implements KeyListener, WindowListener {
      * @param ancho Anchura de la ventana en píxels
      * @param alto Altura de la ventana en píxels
      */
-    public Ventana(String titulo, int ancho, int alto) {
-        final JPanel pantalla = new JPanel(true);
-        marcoVentana = new JFrame(titulo) {
-            @Override
-            public void paint(Graphics g) {
-                //super.paint(g);
-                pantalla.getGraphics().drawImage(lienzo, 0, 0, null);
-            }
-        };
-        marcoVentana.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        marcoVentana.addWindowListener(this);
-        marcoVentana.setSize(ancho, alto);
-        marcoVentana.setResizable(false);
-        marcoVentana.getContentPane().add(pantalla);
-        marcoVentana.setVisible(true);
-        lienzo = new BufferedImage(pantalla.getWidth(), pantalla.getHeight(), BufferedImage.TYPE_INT_RGB);
-        fg = lienzo.getGraphics();
+    public Ventana (String titulo, int ancho, int alto)
+	{
+		for (int i = 0; i < Triangle.Length; i++) {
+			Triangle[i] = new Point();
+		}
+		this.Paint += new PaintEventHandler(pintar);
+		this.FormClosed += new FormClosedEventHandler(cerrar);
+		this.Size = new Size(ancho,alto);
+		this.FormBorderStyle = FormBorderStyle.FixedSingle;
+		lienzo = new Bitmap(ancho,alto);
+		fg = Graphics.FromImage(lienzo);
         borrarLienzoOculto();
-        marcoVentana.addKeyListener(this);
-
+		this.KeyDown += new KeyEventHandler(keyDown);
+		this.KeyUp += new KeyEventHandler(keyUp);
     }
+
+	public void pintar(object sender, PaintEventArgs pea) {
+		pea.Graphics.DrawImageUnscaled(lienzo,0,0);
+	}
 
     /**
      * Comprueba si la flecha "Arriba" del cursor está pulsada o no.
@@ -155,13 +144,14 @@ public class Ventana implements KeyListener, WindowListener {
     /**
      * Cierra la ventana.
      */
-    public void cerrar() {
-        marcoVentana.dispose();
-        System.exit(0);
+    public void cerrar(object sender, FormClosedEventArgs fceh) {
+		this.Dispose(true);
+		Application.Exit();
+		Environment.Exit(0);
     }
 
     private int ultimoTamanyo = 0;
-    private Font ultimaFuente = new Font(Font.SANS_SERIF,Font.PLAIN,12);;
+	private Font ultimaFuente = new Font(FontFamily.GenericSansSerif,12,GraphicsUnit.Pixel);
     /**
      * Escribe un texto por pantalla.
      * @param texto El texto a escribir.
@@ -173,14 +163,13 @@ public class Ventana implements KeyListener, WindowListener {
     public void escribeTexto(String texto, float x, float y, int medidaFuente, Color color) {
         fg.setColor(color);
         if(ultimoTamanyo != medidaFuente) {
-            ultimaFuente = new Font(Font.SANS_SERIF,Font.PLAIN,medidaFuente);
+            ultimaFuente = new Font(FontFamily.GenericSansSerif,medidaFuente,GraphicsUnit.Pixel);
         }
-        fg.setFont(ultimaFuente);
-        fg.drawString(texto, (int)x, (int)y);
+        //fg.setFont(ultimaFuente);
+		Brush b = new SolidBrush(color);
+		fg.DrawString(texto,ultimaFuente,b,x,y);
     }
 
-    private int[] xTriangle = new int[3];
-    private int[] yTriangle = new int[3];
     /**
      * Dibuja un triángulo, dadas tres coordenadas en píxeles y un color.
      * @param x1,y1 Coordenadas x,y del primer punto.
@@ -189,10 +178,10 @@ public class Ventana implements KeyListener, WindowListener {
      * @param color Color del triángulo.
      */
     public void dibujaTriangulo(float x1, float y1, float x2, float y2, float x3, float y3, Color color){
-        xTriangle[0] = (int)x1; xTriangle[1] = (int)x2; xTriangle[2] = (int)x3;
-        yTriangle[0] = (int)y1; yTriangle[1] = (int)y2; yTriangle[2] = (int)y3;
-        fg.setColor(color);
-        fg.fillPolygon(xTriangle,yTriangle,3);
+        Triangle[0].X = (int)x1; Triangle[1].X = (int)x2; Triangle[2].X = (int)x3;
+        Triangle[0].Y = (int)y1; Triangle[1].Y = (int)y2; Triangle[2].Y = (int)y3;
+		Brush b = new SolidBrush(color);
+		fg.FillPolygon(b,Triangle);
     }
 
     /**
@@ -206,8 +195,8 @@ public class Ventana implements KeyListener, WindowListener {
      * @param color Color del rectángulo.
      */
     public void dibujaRectangulo(float izquierda, float arriba, float ancho, float alto, Color color) {
-        fg.setColor(color);
-        fg.fillRect((int)izquierda, (int)arriba, (int)ancho, (int)alto);
+		Brush b = new SolidBrush(color);
+		fg.FillRectangle(b,(int)izquierda, (int)arriba, (int)ancho, (int)alto);
     }
 
     /**
@@ -218,16 +207,16 @@ public class Ventana implements KeyListener, WindowListener {
      * @param color Color del círculo.
      */
     public void dibujaCirculo(float centroX, float centroY, float radio, Color color) {
-        fg.setColor(color);
-        fg.fillArc((int)(centroX - radio), (int)(centroY - radio), (int)(radio*2f),(int)(radio*2f) , 0, 360);
+		Brush b = new SolidBrush(color);
+		fg.FillEllipse(b,(int)(centroX - radio), (int)(centroY - radio), (int)(radio*2f),(int)(radio*2f));
     }
 
     /**
      * Borra el contenido del lienzo oculto (lo deja todo de color negro)
      */
     public void borrarLienzoOculto() {
-        fg.setColor(Color.black);
-        fg.fillRect(0, 0, (int)getAnchuraLienzo(), (int)getAlturaLienzo());
+		Brush b = new SolidBrush(Color.Black);
+        fg.FillRectangle(b,0, 0, (int)getAnchuraLienzo(), (int)getAlturaLienzo());
     }
 
     /**
@@ -235,7 +224,7 @@ public class Ventana implements KeyListener, WindowListener {
      * @return La anchura del lienzo.
      */
     public float getAnchuraLienzo() {
-        return lienzo.getWidth(null);
+		return lienzo.Width;
     }
 
     /**
@@ -243,15 +232,15 @@ public class Ventana implements KeyListener, WindowListener {
      * @return La altura del lienzo.
      */
     public float getAlturaLienzo() {
-        return lienzo.getHeight(null);
+		return lienzo.Height;
     }
 
-    private long lastFrameTime = 0;
+    private DateTime lastFrameTime = DateTime.UtcNow;
     /**
      * Muestra el contenido (dibujo) del lienzo oculto por pantalla.
      */
     public void mostrarLienzo() {
-        marcoVentana.repaint();
+		this.Refresh();
 
         // Para que no vaya más rápido en ordenadores muy rápidos, y más lento
         // en ordenadores lentos, se hace que vaya siempre a la misma velocidad
@@ -261,38 +250,17 @@ public class Ventana implements KeyListener, WindowListener {
         // tiempo en el que el programa estará parado. Así nos aseguramos que
         // Siempre tendremos limitado el número de fotogramas por segundo al valor
         // que especifica la constante FOTOGRAMAS_SEGUNDO
-        long now = System.currentTimeMillis();
-        try {
-            float sleepTime = (1000.0f / FOTOGRAMAS_SEGUNDO) - (float)(now - lastFrameTime);
-            if(sleepTime <= 0) {
-                Thread.yield();
-            } else {
-                Thread.sleep((int)sleepTime);
-            }
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Ventana.class.getName()).log(Level.SEVERE, null, ex);
+		long now = DateTime.UtcNow;
+        float sleepTime = (1000.0f / FOTOGRAMAS_SEGUNDO) - (now - lastFrameTime).TotalMilliseconds as float;
+        if(sleepTime <= 0) {
+			Thread.Yield();
+        } else {
+            Thread.Sleep((int)sleepTime);
         }
-        lastFrameTime = System.currentTimeMillis();
+        lastFrameTime = DateTime.UtcNow;
     }
 
-    /**
-     * Implementación de los métodos de la interfaz WindowListener.
-     * De esta manera, la clase recibe llamadas cuando a la ventana
-     * le sucede algún "evento". A nosotros solamente nos interesa el
-     * método "windowClosing", que se llama cuando se pulsa la cruz
-     * de cerrar en el marco superior de la ventana.
-     * Previamente se ha tenido que añadir una instancia de esta clase
-     * mediante el método addWindowListener() de JFrame.
-     */
-        public void windowClosed(WindowEvent e) {}
-        public void windowActivated(WindowEvent e) {}
-        public void windowClosing(WindowEvent e) {
-            cerrar();
-        }
-        public void windowDeactivated(WindowEvent e) {}
-        public void windowDeiconified(WindowEvent e) {}
-        public void windowIconified(WindowEvent e) {}
-        public void windowOpened(WindowEvent e) {}
+
 
     /**
      * Implementacion de los métodos relativos a la interfaz KeyListener
@@ -301,52 +269,50 @@ public class Ventana implements KeyListener, WindowListener {
      * Previamente se ha tenido que añadir una instancia de esta clase
      * mediante el método addKeyListener() de JFrame.
      */
-        private boolean spaceReleased = true;
+        private bool spaceReleased = true;
 
-        public void keyTyped(KeyEvent e) {
-        }
 
-        public void keyPressed(KeyEvent e) {
-            switch(e.getKeyCode()) {
-                case KeyEvent.VK_UP:
+        public void KeyDown(object sender, KeyEventArgs ev) {
+            switch(ev.KeyCode) {
+				case Keys.Up:
                     teclaArriba = true;
                     break;
-                case KeyEvent.VK_DOWN:
+				case Keys.Down:
                     teclaAbajo = true;
                     break;
-                case KeyEvent.VK_LEFT:
+				case Keys.Left:
                     teclaIzquierda = true;
                     break;
-                case KeyEvent.VK_RIGHT:
+				case Keys.Right:
                     teclaDerecha = true;
                     break;
-                case KeyEvent.VK_SPACE:
+                case Keys.Space:
                     if (spaceReleased) {
                         barraEspaciadora = true;
                     }
                     spaceReleased = false;
                     break;
-                case KeyEvent.VK_ESCAPE:
+                case Keys.Escape:
                     cerrar();
 
             }
         }
 
-        public void keyReleased(KeyEvent e) {
-            switch(e.getKeyCode()) {
-                case KeyEvent.VK_UP:
+        public void keyReleased(object sender, KeyEventArgs ev) {
+            switch(ev.KeyCode) {
+				case Keys.Up:
                     teclaArriba = false;
                     break;
-                case KeyEvent.VK_DOWN:
+				case Keys.Down:
                     teclaAbajo = false;
                     break;
-                case KeyEvent.VK_LEFT:
+				case Keys.Left:
                     teclaIzquierda = false;
                     break;
-                case KeyEvent.VK_RIGHT:
+				case Keys.Right:
                     teclaDerecha = false;
                     break;
-                case KeyEvent.VK_SPACE:
+				case Keys.Space:
                     spaceReleased = true;
                     barraEspaciadora = false;
                     break;

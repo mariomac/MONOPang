@@ -9,9 +9,6 @@
  * posible, de las buenas) como recompensa por mi contribución.
  * -----------------------------------------------------------------------------
  */
-package moo.pang;
-
-import moo.pang.multimedia.Juego;
 
 /**
  * Esta clase no hace nada más que alojar el método main(), y mantener continuamente
@@ -23,6 +20,11 @@ import moo.pang.multimedia.Juego;
  *
  * @author Mario Macías: http://mario.site.ac.upc.edu
  */
+using System.Threading;
+using System.Windows.Forms;
+using System;
+
+
 public class MOOPang {
     private MOOPang() {}
 
@@ -35,9 +37,18 @@ public class MOOPang {
      * la ventana mediante la cruz de cerrar o mediante la tecla ESC, el programa se termine.
      * @param args
      */
-    public static void main(String[] args) {
+	[STAThread]
+	public static void Main() {
         // Se crea el objeto "Juego"
-        Juego elJuego = new Juego();
+		Ventana v = new Ventana("MOOPang", 640, 480);
+		elJuego = new Juego(v);
+		Thread t = new Thread(new ThreadStart(ThreadJuego));
+
+		Application.Run(v);
+    }
+	static Juego elJuego;
+	public static void ThreadJuego ()
+	{
         //Repite infinitamente (cuando el usuario cierre la ventana, internamente
         //se llamará a System.exit() y se saldrá de este bucle)...
         while(true) {
@@ -48,6 +59,5 @@ public class MOOPang {
             //cuando se acaba la partida, se muestra el mensaje de fin de juego
             elJuego.finDeJuego();
         }
-
-    }
+	}
 }

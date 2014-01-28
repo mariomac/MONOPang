@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -32,14 +32,12 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <Reference Include="System" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="multimedia\" />
-    <Folder Include="objetosanimados\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Compile Include="multimedia\Juego.cs" />
     <Compile Include="objetosanimados\Bola.cs" />
@@ -48,6 +46,8 @@
     <Compile Include="objetosanimados\ObjetoAnimado.cs" />
     <Compile Include="objetosanimados\Protagonista.cs" />
     <Compile Include="MONOPang.cs" />
-    <Compile Include="multimedia\Ventana.cs" />
+    <Compile Include="multimedia\Ventana.cs">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
 </Project>

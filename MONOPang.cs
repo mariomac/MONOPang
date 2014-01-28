@@ -40,16 +40,18 @@ public class MOOPang {
 	[STAThread]
 	public static void Main() {
         // Se crea el objeto "Juego"
-		Ventana v = new Ventana("MONO Pang", 640, 480);
-		elJuego = new Juego(v);
+        Ventana v = new Ventana("MONO Pang", 640, 480);
+        elJuego = new Juego(v);
 		Thread t = new Thread(new ThreadStart(ThreadJuego));
 		t.Start();
-
-		Application.Run(v);
+        
+        Application.Run(v);
     }
 	static Juego elJuego;
 	public static void ThreadJuego ()
 	{
+		
+
         //Repite infinitamente (cuando el usuario cierre la ventana, internamente
         //se llamará a System.exit() y se saldrá de este bucle)...
         while(true) {

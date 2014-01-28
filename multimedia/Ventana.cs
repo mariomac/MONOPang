@@ -239,8 +239,12 @@ public class Ventana : Form { // implements KeyListener, WindowListener {
     /**
      * Muestra el contenido (dibujo) del lienzo oculto por pantalla.
      */
+
+    public void refrescar() {
+        this.Refresh();
+    }
     public void mostrarLienzo() {
-		this.Refresh();
+        this.Invoke(new MethodInvoker( refrescar));
 
         // Para que no vaya más rápido en ordenadores muy rápidos, y más lento
         // en ordenadores lentos, se hace que vaya siempre a la misma velocidad
@@ -259,8 +263,6 @@ public class Ventana : Form { // implements KeyListener, WindowListener {
         }
         lastFrameTime = DateTime.UtcNow;
     }
-
-
 
     /**
      * Implementacion de los métodos relativos a la interfaz KeyListener

@@ -10,19 +10,18 @@
  * -----------------------------------------------------------------------------
  */
 
-package moo.pang.objetosanimados;
 
-import java.awt.Color;
-import java.util.Random;
-import moo.multimedia.Ventana;
-import moo.pang.multimedia.Juego;
 
 /**
  * Clase que implementa los destellos que aparecen cuando una bola es explotada.
  *
  * @author Mario Macías: http://mario.site.ac.upc.edu
  */
-public class Destello implements ObjetoAnimado {
+using System;
+using System.Drawing;
+
+
+public class Destello : ObjetoAnimado {
     /**
      * Radio máximo (en píxels) que alcanza el destello antes de desaparecer.
      */
@@ -67,9 +66,9 @@ public class Destello implements ObjetoAnimado {
         if(radio > RADIO_MAXIMO) {
             elJuego.eliminarObjetoAnimado(this);
         } else {
-            Color colorAleatorio =  new Color(RND.nextFloat(), RND.nextFloat(), RND.nextFloat());
+            Color colorAleatorio =  Color.FromArgb(RND.Next(256),RND.Next(256),RND.Next(256));
             v.dibujaCirculo(centroX, centroy, radio,colorAleatorio);
-            v.dibujaCirculo(centroX, centroy, radio-3, Color.black);
+            v.dibujaCirculo(centroX, centroy, radio-3, Color.Black);
         }
     }
 

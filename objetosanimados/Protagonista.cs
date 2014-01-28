@@ -10,18 +10,15 @@
  * -----------------------------------------------------------------------------
  */
 
-package moo.pang.objetosanimados;
-
-import java.awt.Color;
-import moo.multimedia.Ventana;
-import moo.pang.multimedia.Juego;
-
 /**
  * Implementa la clase que representa al personaje del juego.
  *
  * @author Mario Macías: http://mario.site.ac.upc.edu
  */
-public class Protagonista implements ObjetoAnimado {
+using System.Drawing;
+
+
+public class Protagonista : ObjetoAnimado {
     /**
      * Posición x e y de la esquina superior izquierda del cuadro que engloba al protagonista.
      */
@@ -74,8 +71,8 @@ public class Protagonista implements ObjetoAnimado {
         //colisiona con alguna de las bolas, se le dice a la clase juego que el
         //jugador ha sido tocado, para que actue en consecuencia segun la funcion
         //jugadorTocado() de la clase Juego
-        for(ObjetoAnimado obj : elJuego.getObjetosAnimados()) {
-            if(obj instanceof Bola) {
+        foreach(ObjetoAnimado obj in elJuego.getObjetosAnimados()) {
+            if(obj is Bola) {
                 Bola bola = (Bola) obj;
                 if(bola.getCentroY() + bola.getRadio() >= posicionY) {
                     if((bola.getCentroX() + bola.getRadio() >= posicionX)
@@ -89,23 +86,23 @@ public class Protagonista implements ObjetoAnimado {
 
         float x = posicionX - MARGEN_IZQUIERDO_COLISION;
         //ventana.dibujaRectangulo(x+MARGEN_IZQUIERDO_COLISION, posicionY, ANCHURA_COLISION, ALTURA_COLISION, Color.white);
-        ventana.dibujaCirculo(x+24, posicionY+16, 16, Color.orange);
-        ventana.dibujaCirculo(x+18, posicionY+14, 3, Color.black);
-        ventana.dibujaCirculo(x+30, posicionY+14, 3, Color.black);
-        ventana.dibujaRectangulo(x+16, posicionY+22, 16,3, Color.black);
-        ventana.dibujaTriangulo(x+24,posicionY+32,x+0,posicionY+44,x+4,posicionY+53, Color.orange);
-        ventana.dibujaTriangulo(x+24,posicionY+32,x+48,posicionY+44,x+44,posicionY+53, Color.orange);
-        ventana.dibujaRectangulo(x+16,posicionY+32,16,24,Color.white);
-        ventana.dibujaRectangulo(x+14, posicionY+56, 8, 16, Color.blue);
-        ventana.dibujaRectangulo(x+26, posicionY+56, 8, 16, Color.blue);
-        ventana.dibujaRectangulo(x+10, posicionY+68, 12, 4, Color.red);
-        ventana.dibujaRectangulo(x+26, posicionY+68, 12, 4, Color.red);
+        ventana.dibujaCirculo(x+24, posicionY+16, 16, Color.Orange);
+        ventana.dibujaCirculo(x+18, posicionY+14, 3, Color.Black);
+        ventana.dibujaCirculo(x+30, posicionY+14, 3, Color.Black);
+        ventana.dibujaRectangulo(x+16, posicionY+22, 16,3, Color.Black);
+        ventana.dibujaTriangulo(x+24,posicionY+32,x+0,posicionY+44,x+4,posicionY+53, Color.Orange);
+        ventana.dibujaTriangulo(x+24,posicionY+32,x+48,posicionY+44,x+44,posicionY+53, Color.Orange);
+        ventana.dibujaRectangulo(x+16,posicionY+32,16,24,Color.White);
+        ventana.dibujaRectangulo(x+14, posicionY+56, 8, 16, Color.Blue);
+        ventana.dibujaRectangulo(x+26, posicionY+56, 8, 16, Color.Blue);
+        ventana.dibujaRectangulo(x+10, posicionY+68, 12, 4, Color.Red);
+        ventana.dibujaRectangulo(x+26, posicionY+68, 12, 4, Color.Red);
     }
 
     //Velocidad a la que se mueve el jugador
-    private final static float VELOCIDAD_HORIZONTAL = 6;
+    private const float VELOCIDAD_HORIZONTAL = 6;
    
-    private static final float MARGEN_IZQUIERDO_COLISION = 12;
-    private static final float ANCHURA_COLISION = 24;
-    private static final float ALTURA_COLISION = 72;
+    private const float MARGEN_IZQUIERDO_COLISION = 12;
+    private const float ANCHURA_COLISION = 24;
+    private const float ALTURA_COLISION = 72;
 }

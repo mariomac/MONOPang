@@ -23,6 +23,9 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Collections;
+using System.Threading;
+using System.Drawing;
 
 
 public class Juego {
@@ -49,7 +52,7 @@ public class Juego {
     /**
      * Tiempo (en milisegundos) en que apareció la última bola.
      */
-    private long tiempoDeUltimaBola = 0;
+    private DateTime tiempoDeUltimaBola;
     /**
      * Puntuación de la partida
      */
@@ -71,7 +74,7 @@ public class Juego {
      */
 	private const long ACELERACION_FRECUENCIA_BOLAS = 200;
 
-	private const Random RANDOM = new Random();
+	private static readonly Random RANDOM = new Random();
 
     /**
      * Será "true" cuando una bola haya tocado al jugador, y el juego haya acabado.
@@ -91,9 +94,9 @@ public class Juego {
     public void partida() {
         //inicia algunos datos
         frecuenciaEntreBolas = MINIMA_FRECUENCIA_ENTRE_BOLAS;
-        objetosAnimados = new ArrayList<ObjetoAnimado>();
-        objetosAnimados.add(new Protagonista(this));
-        tiempoDeUltimaBola = 0;
+        objetosAnimados = new List<ObjetoAnimado>();
+        objetosAnimados.Add(new Protagonista(this));
+		tiempoDeUltimaBola = DateTime.MinValue;
         finDeJuego = false;
         puntuacion = 0;
         Disparo.setTotalDisparos(0);
@@ -117,29 +120,29 @@ public class Juego {
         ventana.borrarLienzoOculto();
 
         //Dibujamos el techo y el suelo
-        ventana.dibujaRectangulo(0,0,MARGEN,ventana.getAlturaLienzo(), Color.yellow);
-        ventana.dibujaRectangulo(getCoordenadaXMargenDerecho(), 0, MARGEN, ventana.getAlturaLienzo(), Color.yellow);
-        ventana.dibujaRectangulo(0, getCoordenadaYSuelo(), ventana.getAnchuraLienzo(), MARGEN, Color.yellow);
+        ventana.dibujaRectangulo(0,0,MARGEN,ventana.getAlturaLienzo(), Color.Yellow);
+        ventana.dibujaRectangulo(getCoordenadaXMargenDerecho(), 0, MARGEN, ventana.getAlturaLienzo(), Color.Yellow);
+        ventana.dibujaRectangulo(0, getCoordenadaYSuelo(), ventana.getAnchuraLienzo(), MARGEN, Color.Yellow);
 
         //Mueve y pinta todos los objetos en pantalla
         //creamos una lista aparte para no tener error de modificación
         //en concurrencia cuando alguno de los objetos solicite insertar o borrar
         //elementos en la lista de objetos animados
-        Iterator<ObjetoAnimado> iteradorObjetos = new LinkedList<ObjetoAnimado>(objetosAnimados).iterator();
-        while(iteradorObjetos.hasNext()) {
-            iteradorObjetos.next().moverYDibujar(ventana);
+		ObjetoAnimado[] copia = objetosAnimados.ToArray();
+		foreach(ObjetoAnimado obj in copia) {
+            obj.moverYDibujar(ventana);
         }        
 
         //Mira si hay que lanzar una nueva bola desde el techo
-        long ahora = System.currentTimeMillis();
-        if(ahora > tiempoDeUltimaBola + frecuenciaEntreBolas) {
-            objetosAnimados.add(new Bola(this, (float) (
+		DateTime ahora = DateTime.UtcNow;
+        if((ahora - tiempoDeUltimaBola).TotalMilliseconds > frecuenciaEntreBolas) {
+            objetosAnimados.Add(new Bola(this, (float) (
                        getCoordenadaXMargenIzquierdo()
-                       + RANDOM.nextInt((int)(getCoordenadaXMargenDerecho() - getCoordenadaXMargenIzquierdo())))));
+                       + RANDOM.Next((int)(getCoordenadaXMargenDerecho() - getCoordenadaXMargenIzquierdo())))));
             tiempoDeUltimaBola = ahora;
         }
         //antes de mostrar el lienzo del juego, sobreimpresiona la puntuación
-        ventana.escribeTexto("Puntos: " + puntuacion, 30, 20, 18, Color.white);
+        ventana.escribeTexto("Puntos: " + puntuacion, 30, 20, 18, Color.White);
     }
 
     /**
@@ -147,7 +150,7 @@ public class Juego {
      * @return
      */
     public ObjetoAnimado[] getObjetosAnimados() {
-        return objetosAnimados.toArray(new ObjetoAnimado[objetosAnimados.size()]);
+        return objetosAnimados.ToArray();
     }
 
     /**
@@ -156,7 +159,7 @@ public class Juego {
      * @param obj Una referencia al objeto a eliminar.
      */
     public void eliminarObjetoAnimado(ObjetoAnimado obj) {
-        objetosAnimados.remove(obj);
+        objetosAnimados.Remove(obj);
     }
 
     /**
@@ -166,7 +169,7 @@ public class Juego {
      * @param obj Una referencia al objeto a añadir
      */
     public void anyadirObjetoAnimado(ObjetoAnimado obj) {
-        objetosAnimados.add(obj);
+        objetosAnimados.Add(obj);
     }
 
     /**
@@ -213,18 +216,14 @@ public class Juego {
     /**
      * Muestra la pantalla de fin de juego.
      */
-    public void finDeJuego() {
-        ventana.escribeTexto("Fin de Juego!", 120,200, 64, Color.green);
+    public void finalizaJuego() {
+        ventana.escribeTexto("Fin de Juego!", 120,200, 64, Color.Green);
         ventana.mostrarLienzo();
         //Hacemos que duerma unos tres segundos, para evitar que la pantalla
         //de fin de juego desaparezca demasiado rápido si el jugador
         //aprieta la barra espaciadora sin querer (porque, por ejemplo, estaba
         //disparando cuando le tocó la bola).
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
-        }
+        Thread.Sleep(3000);
 
         while(!ventana.isPulsadoEspacio()) {
             // espera a que se pulse espacio para salir del mensaje de Fin de juego
@@ -237,11 +236,12 @@ public class Juego {
     public void presentacion() {
         ventana.borrarLienzoOculto();
 
-        ventana.escribeTexto("MOO Pang!", 150,150, 64, Color.red);
-        ventana.escribeTexto("Pulsa espacio para empezar", 180,420, 18, Color.white);
+        ventana.escribeTexto("MONO Pang!", 150,150, 64, Color.Red);
+        ventana.escribeTexto("Pulsa espacio para empezar", 180,420, 18, Color.White);
         ventana.mostrarLienzo();
         while(!ventana.isPulsadoEspacio()) {
             // espera a que se pulse espacio para salir de la presentacion
+			Thread.Yield ();
         }
     }
 }

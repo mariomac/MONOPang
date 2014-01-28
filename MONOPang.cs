@@ -40,9 +40,10 @@ public class MOOPang {
 	[STAThread]
 	public static void Main() {
         // Se crea el objeto "Juego"
-		Ventana v = new Ventana("MOOPang", 640, 480);
+		Ventana v = new Ventana("MONO Pang", 640, 480);
 		elJuego = new Juego(v);
 		Thread t = new Thread(new ThreadStart(ThreadJuego));
+		t.Start();
 
 		Application.Run(v);
     }
@@ -57,7 +58,7 @@ public class MOOPang {
             //Cuando se sale de la presentación, empieza la partida
             elJuego.partida();
             //cuando se acaba la partida, se muestra el mensaje de fin de juego
-            elJuego.finDeJuego();
+            elJuego.finalizaJuego();
         }
 	}
 }

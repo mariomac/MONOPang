@@ -59,11 +59,11 @@ public class Ventana : Form { // implements KeyListener, WindowListener {
      * JFrame es un objeto que maneja una ventana de pantalla.
      */
     /**
-     * Las siguientes variables booleanas guardan el estado de algunas teclas.
+     * Las siguientes variables boolas guardan el estado de algunas teclas.
      * serán "true" cuando alguna de estas teclas esté pulsada, y "false" en caso
      * contrario.
      */
-    private boolean teclaArriba = false,
+    private bool teclaArriba = false,
             teclaAbajo = false,
             teclaIzquierda = false,
             teclaDerecha = false,
@@ -83,6 +83,7 @@ public class Ventana : Form { // implements KeyListener, WindowListener {
 		for (int i = 0; i < Triangle.Length; i++) {
 			Triangle[i] = new Point();
 		}
+		base.Text = titulo;
 		this.Paint += new PaintEventHandler(pintar);
 		this.FormClosed += new FormClosedEventHandler(cerrar);
 		this.Size = new Size(ancho,alto);
@@ -90,8 +91,8 @@ public class Ventana : Form { // implements KeyListener, WindowListener {
 		lienzo = new Bitmap(ancho,alto);
 		fg = Graphics.FromImage(lienzo);
         borrarLienzoOculto();
-		this.KeyDown += new KeyEventHandler(keyDown);
-		this.KeyUp += new KeyEventHandler(keyUp);
+		this.KeyDown += new KeyEventHandler(KeyDownH);
+		this.KeyUp += new KeyEventHandler(KeyUpH);
     }
 
 	public void pintar(object sender, PaintEventArgs pea) {
@@ -102,28 +103,28 @@ public class Ventana : Form { // implements KeyListener, WindowListener {
      * Comprueba si la flecha "Arriba" del cursor está pulsada o no.
      * @return true si está pulsada. false en caso contrario.
      */
-    public boolean isPulsadoArriba() {
+    public bool isPulsadoArriba() {
         return teclaArriba;
     }
     /**
      * Comprueba si la flecha "Abajo" del cursor está pulsada o no.
      * @return true si está pulsada. false en caso contrario.
      */
-    public boolean isPulsadoAbajo() {
+    public bool isPulsadoAbajo() {
         return teclaAbajo;
     }
     /**
      * Comprueba si la flecha "Izquierda" del cursor está pulsada o no.
      * @return true si está pulsada. false en caso contrario.
      */
-    public boolean isPulsadoIzquierda() {
+    public bool isPulsadoIzquierda() {
         return teclaIzquierda;
     }
     /**
      * Comprueba si la flecha "Derecha" del cursor está pulsada o no.
      * @return true si está pulsada. false en caso contrario.
      */
-    public boolean isPulsadoDerecha() {
+    public bool isPulsadoDerecha() {
         return teclaDerecha;
     }
     /**
@@ -132,7 +133,7 @@ public class Ventana : Form { // implements KeyListener, WindowListener {
      * soltarse y volver a pulsarse para que la función devuelva "true" dos veces.
      * @return true si está pulsada. false en caso contrario.
      */
-    public boolean isPulsadoEspacio() {
+    public bool isPulsadoEspacio() {
         if(barraEspaciadora) {
             barraEspaciadora = false;
             return true;
@@ -160,8 +161,7 @@ public class Ventana : Form { // implements KeyListener, WindowListener {
      * @param medidaFuente Tamaño de la fuente, en píxels.
      * @param color Color del texto.
      */
-    public void escribeTexto(String texto, float x, float y, int medidaFuente, Color color) {
-        fg.setColor(color);
+    public void escribeTexto(String texto, float x, float y, int medidaFuente, Color color) {        
         if(ultimoTamanyo != medidaFuente) {
             ultimaFuente = new Font(FontFamily.GenericSansSerif,medidaFuente,GraphicsUnit.Pixel);
         }
@@ -250,8 +250,8 @@ public class Ventana : Form { // implements KeyListener, WindowListener {
         // tiempo en el que el programa estará parado. Así nos aseguramos que
         // Siempre tendremos limitado el número de fotogramas por segundo al valor
         // que especifica la constante FOTOGRAMAS_SEGUNDO
-		long now = DateTime.UtcNow;
-        float sleepTime = (1000.0f / FOTOGRAMAS_SEGUNDO) - (now - lastFrameTime).TotalMilliseconds as float;
+		DateTime now = DateTime.UtcNow;
+        float sleepTime = (1000.0f / FOTOGRAMAS_SEGUNDO) - (float)(now - lastFrameTime).TotalMilliseconds;
         if(sleepTime <= 0) {
 			Thread.Yield();
         } else {
@@ -269,36 +269,30 @@ public class Ventana : Form { // implements KeyListener, WindowListener {
      * Previamente se ha tenido que añadir una instancia de esta clase
      * mediante el método addKeyListener() de JFrame.
      */
-        private bool spaceReleased = true;
+    private bool spaceReleased = true;
 
 
-        public void KeyDown(object sender, KeyEventArgs ev) {
-            switch(ev.KeyCode) {
-				case Keys.Up:
-                    teclaArriba = true;
-                    break;
-				case Keys.Down:
-                    teclaAbajo = true;
-                    break;
-				case Keys.Left:
-                    teclaIzquierda = true;
-                    break;
-				case Keys.Right:
-                    teclaDerecha = true;
-                    break;
-                case Keys.Space:
-                    if (spaceReleased) {
-                        barraEspaciadora = true;
-                    }
-                    spaceReleased = false;
-                    break;
-                case Keys.Escape:
-                    cerrar();
+    public void KeyDownH(object sender, KeyEventArgs ev) {
+		if(ev.KeyCode == Keys.Up ) {
+			teclaArriba = true;
+		} else if(ev.KeyCode == Keys.Down ) {
+			teclaAbajo = true;
+		} else if(ev.KeyCode == Keys.Left ) {
+			teclaIzquierda = true;
+		} else if(ev.KeyCode == Keys.Right ) {
+			teclaDerecha = true;
+		} else if(ev.KeyCode == Keys.Space ) {
+			if(spaceReleased) {
+				barraEspaciadora = true;
+			}
+			spaceReleased = false;
+		} else if(ev.KeyCode == Keys.Escape ) {
+			cerrar (null,null);
+		}
 
-            }
-        }
+    }
 
-        public void keyReleased(object sender, KeyEventArgs ev) {
+        public void KeyUpH(object sender, KeyEventArgs ev) {
             switch(ev.KeyCode) {
 				case Keys.Up:
                     teclaArriba = false;

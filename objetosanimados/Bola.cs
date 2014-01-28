@@ -10,39 +10,37 @@
  * -----------------------------------------------------------------------------
  */
 
-package moo.pang.objetosanimados;
-
-import java.awt.Color;
-import moo.multimedia.Ventana;
-import moo.pang.multimedia.Juego;
 
 /**
  * Clase que implementa las bolas que botan por la pantalla.
  * @author Mario Macías: http://mario.site.ac.upc.edu
  */
-public class Bola implements ObjetoAnimado {
+using System.Drawing;
+
+
+public class Bola : ObjetoAnimado {
     /**
      * Aceleración de la bola hacia el suelo. Simula la fuerza de la gravedad.
      * Su valor no está en el sistema métrico, sino en una métrica nuestra:
      * pixels /(fotograma*fotograma).
      */
-    protected static final float ACELERACION = 1.0f;
+    protected const float ACELERACION = 1.0f;
 
     /**
      * Velocidad horizontal de las bolas. Su valor no está en el sistema métrico,
      * sino en pixels/fotograma.
      */
-    public static final float VELOCIDAD_HORIZONTAL = 4;
+    public const float VELOCIDAD_HORIZONTAL = 4;
 
     /**
      * Velocidad máxima que tendrá una bola al rebotar (la más grande). Su valor
      * no está en sistema métrico sino en pixels/fotograma.
      */
-    protected static final float VELOCIDAD_MAXIMA_REBOTE = -25;
+    protected const float VELOCIDAD_MAXIMA_REBOTE = -25;
     /**
      * Radio máximo que puede tener una bola, en píxels.
      */
-    protected static final float RADIO_MAXIMO = 50;
+    protected const float RADIO_MAXIMO = 50;
 
     /**
      * Posición del centro de la bola.
@@ -80,9 +78,9 @@ public class Bola implements ObjetoAnimado {
     }
 
     //Las tres tonalidades de la bola en formato RED-GREEN-BLUE
-    private static final Color SOMBRA = new Color(0.6f,0f,0f);
-    private static final Color CUERPO = new Color(0.9f,0f,0f);
-    private static final Color BRILLO = new Color(1f,0.85f,0.85f);
+    private static readonly Color SOMBRA = Color.FromArgb(0,0,153);
+    private static readonly Color CUERPO = Color.FromArgb(0,0,230);
+    private static readonly Color BRILLO = Color.FromArgb(217,217,255);
 
     /**
      * Este método mueve un poco la bola según la física descrita en el código
@@ -135,14 +133,14 @@ public class Bola implements ObjetoAnimado {
      * radio menor o igual a este se pinche, ya no se dividirá en dos bolas
      * más pequeñas, sino que desaparecera.
      */
-    private static final float RADIO_MINIMO = VELOCIDAD_HORIZONTAL * 2;
+    private const float RADIO_MINIMO = VELOCIDAD_HORIZONTAL * 2;
 
     /**
      * Porcentaje de reducción del radio de una bola al pincharse. En este caso,
      * cuando pinchemos una bola, se crearán dos nuevas bolas, cada una con un
      * radio equivalente al 60% de la bola anterior.
      */
-    private static final float REDUCCION_RADIO = 0.6f;
+    private const float REDUCCION_RADIO = 0.6f;
 
     /**
      * Este método se llama cuando una bola es tocada por un gancho o cuerda

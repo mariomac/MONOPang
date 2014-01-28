@@ -9,11 +9,7 @@
  * posible, de las buenas) como recompensa por mi contribución.
  * -----------------------------------------------------------------------------
  */
-package moo.pang.objetosanimados;
 
-import java.awt.Color;
-import moo.multimedia.Ventana;
-import moo.pang.multimedia.Juego;
 
 /**
  * Este clase representa lo que el jugador puede disparar: los ganchos atados
@@ -21,30 +17,34 @@ import moo.pang.multimedia.Juego;
  *
  * Mario Macías: http://mario.site.ac.upc.edu
  */
-public class Disparo implements ObjetoAnimado {
+using System.Drawing;
+using System;
+
+
+public class Disparo : ObjetoAnimado {
     /**
      * Altura del triangulo que representa el gancho (en pixels)
      */
-    private static final float ALTURA_GANCHO = 24;
+    private const float ALTURA_GANCHO = 24;
     /**
      * Anchura de la base del triangulo que representa el gancho (en pixels)
      */
-    private static final float BASE_FLECHA = 16;
+    private const float BASE_FLECHA = 16;
 
     /**
      * Velocidad a la que se mueve el gancho (en pixels/fotograma)
      */
-    private static final float VELOCIDAD = 10;
+    private const float VELOCIDAD = 10;
     /**
      * Grosor de la cuerda que va atada al gancho
      */
-    private static final float GROSOR_CUERDA = 6;
+    private const float GROSOR_CUERDA = 6;
 
     /**
      * Constante que indica cuántos disparos se pueden haber a la vez en
      * pantalla (lo limitamos para hacer el juego más dificil)
      */
-    public static final int MAXIMO_DISPAROS_SIMULTANEOS = 2;
+    public const int MAXIMO_DISPAROS_SIMULTANEOS = 2;
 
     /**
      * Contador estático que cuenta cuántos ganchos hay en todo momento
@@ -88,7 +88,7 @@ public class Disparo implements ObjetoAnimado {
     /**
      * Constante que representa el color marrón según sus valores rojo,verde,azul
      */
-    private static final Color MARRON = new Color(0.7f, 0.35f, 0);
+    private static readonly Color MARRON = Color.FromArgb(179, 89, 0);
 
     /**
      * Implementación del método moverYDibujar de la interfaz ObjetoAnimado.
@@ -107,8 +107,9 @@ public class Disparo implements ObjetoAnimado {
         }
 
         //Comprobamos si colisiona con alguna bola de la lista del juego
-        for(ObjetoAnimado obj : elJuego.getObjetosAnimados()) {
-            if(obj instanceof Bola && compruebaColision((Bola)obj)) {
+        foreach(ObjetoAnimado obj in elJuego.getObjetosAnimados()) {
+
+            if(obj is Bola && compruebaColision((Bola)obj)) {
                 ((Bola)obj).pinchar();
                 elJuego.eliminarObjetoAnimado(this);
                 disparosSimultaneos--;
@@ -120,7 +121,7 @@ public class Disparo implements ObjetoAnimado {
         ventana.dibujaTriangulo(posicionX, posicionY,
                 posicionX - BASE_FLECHA / 2, posicionY + ALTURA_GANCHO,
                 posicionX + BASE_FLECHA / 2, posicionY + ALTURA_GANCHO,
-                Color.LIGHT_GRAY);
+                Color.LightGray);
         ventana.dibujaRectangulo(posicionX - GROSOR_CUERDA / 2, posicionY + ALTURA_GANCHO,
                 GROSOR_CUERDA, elJuego.getCoordenadaYSuelo()- (posicionY + ALTURA_GANCHO), MARRON);
     }
@@ -131,9 +132,9 @@ public class Disparo implements ObjetoAnimado {
      * @param b La instancia de Bola cuya colisión queremos comparar
      * @return true si ha colisionado. false en caso contrario
      */
-    public boolean compruebaColision(Bola b) {
+    public bool compruebaColision(Bola b) {
         //comprobamos si la bola colisiona con la cuerda
-        if(Math.abs(b.getCentroX() - posicionX) < Math.abs(b.getRadio() + GROSOR_CUERDA / 2)
+        if(Math.Abs(b.getCentroX() - posicionX) < Math.Abs(b.getRadio() + GROSOR_CUERDA / 2)
            && b.getCentroY() - b.getRadio() >= posicionY) {
             return true;
         }
@@ -141,8 +142,8 @@ public class Disparo implements ObjetoAnimado {
         float esquinaDerechaDistanciaX = (posicionX + GROSOR_CUERDA / 2) - b.getCentroX();
         float esquinaIzquierdaDistanciaX = (posicionX - GROSOR_CUERDA / 2) - b.getCentroX();
         float esquinaDistanciaY = (posicionY + ALTURA_GANCHO) - b.getCentroY();
-        if(Math.sqrt(esquinaDerechaDistanciaX*esquinaDerechaDistanciaX+esquinaDistanciaY*esquinaDistanciaY) < b.getRadio()
-            || Math.sqrt(esquinaIzquierdaDistanciaX*esquinaIzquierdaDistanciaX+esquinaDistanciaY*esquinaDistanciaY) < b.getRadio()) {
+        if(Math.Sqrt(esquinaDerechaDistanciaX*esquinaDerechaDistanciaX+esquinaDistanciaY*esquinaDistanciaY) < b.getRadio()
+            || Math.Sqrt(esquinaIzquierdaDistanciaX*esquinaIzquierdaDistanciaX+esquinaDistanciaY*esquinaDistanciaY) < b.getRadio()) {
             return true;
         }
         return false;

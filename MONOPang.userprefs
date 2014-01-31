@@ -1,14 +1,14 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="MONOPang.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="multimedia/Ventana.cs">
     <Files>
-      <File FileName="multimedia/Juego.cs" Line="140" Column="20" />
-      <File FileName="objetosanimados/Disparo.cs" Line="91" Column="66" />
-      <File FileName="objetosanimados/Protagonista.cs" Line="99" Column="68" />
-      <File FileName="objetosanimados/Bola.cs" Line="83" Column="56" />
-      <File FileName="multimedia/Ventana.cs" Line="86" Column="22" />
-      <File FileName="objetosanimados/Destello.cs" Line="69" Column="93" />
-      <File FileName="MONOPang.cs" Line="46" Column="13" />
+      <File FileName="multimedia/Juego.cs" Line="1" Column="1" />
+      <File FileName="objetosanimados/Disparo.cs" Line="1" Column="1" />
+      <File FileName="objetosanimados/Protagonista.cs" Line="1" Column="1" />
+      <File FileName="objetosanimados/Bola.cs" Line="1" Column="1" />
+      <File FileName="multimedia/Ventana.cs" Line="42" Column="24" />
+      <File FileName="objetosanimados/Destello.cs" Line="1" Column="1" />
+      <File FileName="MONOPang.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

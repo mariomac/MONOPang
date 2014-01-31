@@ -83,16 +83,19 @@ public class Ventana : Form { // implements KeyListener, WindowListener {
 		for (int i = 0; i < Triangle.Length; i++) {
 			Triangle[i] = new Point();
 		}
+        
 		base.Text = titulo;
+        this.DoubleBuffered = true;
 		this.Paint += new PaintEventHandler(pintar);
 		this.FormClosed += new FormClosedEventHandler(cerrar);
-		this.Size = new Size(ancho,alto);
+		this.Size = new Size(ancho,alto+10);
 		this.FormBorderStyle = FormBorderStyle.FixedSingle;
 		lienzo = new Bitmap(ancho,alto);
 		fg = Graphics.FromImage(lienzo);
         borrarLienzoOculto();
 		this.KeyDown += new KeyEventHandler(KeyDownH);
 		this.KeyUp += new KeyEventHandler(KeyUpH);
+
     }
 
 	public void pintar(object sender, PaintEventArgs pea) {

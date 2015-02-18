@@ -26,3 +26,6 @@ two smaller balls. When balls are small enough they will disappear when are hit 
 an arrow.
 
 If a ball hits you, game is over.
+
+
+Si te gustan mis aportaciones a github, quizás te gustará mi libro [Del bit a la Nube](http://www.xaas.guru/del-bit-a-la-nube/)
